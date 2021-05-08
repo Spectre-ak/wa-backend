@@ -7,13 +7,12 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DownloadCredentials {
-	
+
 	@GetMapping("/downloadRDAMVMYJK9ehfnoXU")
 	public String download(@RequestParam(name = "credURL") String credURL,
 			@RequestParam(name="tokenURL")String tokenURL) {
@@ -21,13 +20,13 @@ public class DownloadCredentials {
 			return "alreadySet";
 		downloadCred(credURL);
 		downloadToken(tokenURL);
-		
-		
+
+
 		return "done";
-		
+
 	}
-	
-	
+
+
 
 	boolean checkCred() {
 		File f=new File("credentialsSheets.json");
@@ -36,7 +35,7 @@ public class DownloadCredentials {
 		}
 		else return false;
 	}
-	
+
 	boolean checkToken() {
 		File f=new File("tokens");
 		if(f.exists()) {
@@ -65,7 +64,7 @@ public class DownloadCredentials {
 			// TODO: handle exceptione
 			e.printStackTrace();
 		}
-		
+
 	}
 	void downloadToken(String tokenURL) {
 		try {
@@ -74,7 +73,7 @@ public class DownloadCredentials {
 			f.mkdir();
 			try (BufferedInputStream inputStream = new BufferedInputStream(
 					new URL(tokenURL).openStream());
-				
+
 					FileOutputStream fileOS = new FileOutputStream("tokens/StoredCredential")) {
 				byte data[] = new byte[1024];
 				int byteContent;

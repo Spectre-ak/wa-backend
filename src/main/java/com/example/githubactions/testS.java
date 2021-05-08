@@ -37,7 +37,7 @@ public class testS {
 
 	/**
 	 * Creates an authorized Credential object.
-	 * 
+	 *
 	 * @param HTTP_TRANSPORT The network HTTP Transport.
 	 * @return An authorized Credential object.
 	 * @throws IOException If the credentials.json file cannot be found.
@@ -58,30 +58,29 @@ public class testS {
 		LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
 		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 	}
-	
+
 	public static void main(String ar[]) {
 		try {
 			final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-			final String spreadsheetId = "1PkATem4Il_rVosE35tpwTPgydf_Ni1wtqfPFN-Zg6x0";
+			final String spreadsheetId = "1-FQd-uYzRgZTYovEjUa9VbxubPK6S-xILGFMnXTAIT4";
 			final String range = "!A:AB";
 			Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
 					.setApplicationName(APPLICATION_NAME).build();
 			ValueRange response = service.spreadsheets().values().get(spreadsheetId, range).execute();
 			List<List<Object>> values = response.getValues();
-			
+
 			for (List row : values) {
 				System.out.println(row);
-				
 			}
-			
-			
+
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	
+
+
 
 }

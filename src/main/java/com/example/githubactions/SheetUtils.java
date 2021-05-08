@@ -5,12 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,7 +41,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 /**
  * this class is responsible for account creation, login, update profile and all
  * sort of work at user level
- * 
+ *
  * @author upadh
  *
  */
@@ -67,7 +61,7 @@ public class SheetUtils {
 
 	/**
 	 * Creates an authorized Credential object.
-	 * 
+	 *
 	 * @param HTTP_TRANSPORT The network HTTP Transport.
 	 * @return An authorized Credential object.
 	 * @throws IOException If the credentials.json file cannot be found.
@@ -89,6 +83,42 @@ public class SheetUtils {
 		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 	}
 
+	public List<List<Object>> retrieveDataSet() {
+		List<List<Object>> values = new ArrayList<>();
+		try {
+			final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+			final String spreadsheetId = "1-FQd-uYzRgZTYovEjUa9VbxubPK6S-xILGFMnXTAIT4";
+			final String range = "!A:AB";
+			Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+					.setApplicationName(APPLICATION_NAME).build();
+			ValueRange response = service.spreadsheets().values().get(spreadsheetId, range).execute();
+			values = response.getValues();
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return values;
+	}
+
+	public List<Map<String, String>> mapDataSet(List<List<Object>> lists) {
+		List<Map<String, String>> mappedList = new ArrayList<>();
+		List<Object> keys = lists.get(0);
+
+		for (List row : lists) {
+			Map<String, String> element = new HashMap();
+			for(int i = 0; i < keys.size() ; i++)
+			{
+				try{ element.put((String) keys.get(i), (String) row.get(i)); }
+				catch(IndexOutOfBoundsException ex) {
+				}
+			}
+			mappedList.add(element);
+		}
+		mappedList.remove(0);
+		return mappedList;
+	}
+
 	@PostMapping("/signInGoogle")
 	@CrossOrigin({ "http://localhost:3000", "friendly-doodle.azurewebsites.net" })
 	public synchronized String signInGoogleAndAccCreate(
@@ -105,10 +135,10 @@ public class SheetUtils {
 		System.out.println(profilePicLink);
 		System.out.println(type);
 		System.out.println(pass);
-		
+
 		//if(true)
 		//	return "testing";
-		
+
 		if (isCookiePresent(request))
 			return "cookie_present";
 
@@ -125,14 +155,14 @@ public class SheetUtils {
 		} else if (type.equals("defLogin")) {
 			result = InsertNewUser(email, name, profilePicLink, pass, type);
 		}
-		
+
 		System.out.println("result is "+Arrays.toString(result));
 
-		if (result[0].equals("email_present_gsign") || 
+		if (result[0].equals("email_present_gsign") ||
 				result[0].equals("new_user_added")
 				|| result[0].equals("user_valid")) {
 			// email already present so log in the user and return id
-			
+
 			return result[1];
 		}
 		else
@@ -162,7 +192,7 @@ public class SheetUtils {
 						}
 					}
 				}
-			} 
+			}
 			else if(type.equals("accCreate")) {
 				if (values == null || values.isEmpty()) {
 					System.out.println("No data found.");
@@ -194,7 +224,7 @@ public class SheetUtils {
 			String userId=UUID.randomUUID().toString();
 			List<List<Object>> userDetails = new ArrayList<>();
 			ArrayList<Object> arrayList = new ArrayList<>();
-			
+
 			arrayList.add(userId);
 			arrayList.add(email);
 			arrayList.add(password);// -- no password for google sign in
@@ -211,7 +241,7 @@ public class SheetUtils {
 			arrayList.add("-");
 			arrayList.add("-");
 			arrayList.add("-");
-			
+
 
 			userDetails.add(arrayList);
 
@@ -246,7 +276,7 @@ public class SheetUtils {
 			}
 		return false;
 	}
-	
+
 	@GetMapping("/testCookie")
 	@CrossOrigin(origins = {"http://localhost:3000","http://localhost:44"
 		,"https://friendly-doodle.azurewebsites.net"},allowCredentials = "true")
@@ -257,7 +287,7 @@ public class SheetUtils {
 			for (Cookie cookie : ar) {
 				System.out.println(cookie.getName());
 			}
-		
+
 		Cookie jwtTokenCookie = new Cookie("user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t");
 
 	      jwtTokenCookie.setMaxAge(1123424);
@@ -266,20 +296,20 @@ public class SheetUtils {
 	      jwtTokenCookie.setPath("/");
 	      //jwtTokenCookie.setDomain("friendly-doodle.azurewebsites.net");
 	      response.addCookie(jwtTokenCookie);
-	      
+
 	      response.addHeader("Access-Control-Allow-Credentials", "true");
 	     // response.addHeader("Access-Control-Allow-Origin", "http://localhost");
-	      
+
 		return "added";
 	}
-	
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@CrossOrigin({"http://localhost:3000","http://localhost:44"})
 	public ResponseEntity<String> singleSignOn(HttpServletResponse response) {
 
 	    response.addCookie(new Cookie("heroku-nav-data", "adad"));
-	    return new ResponseEntity<String>("a",HttpStatus.OK);    
+	    return new ResponseEntity<String>("a",HttpStatus.OK);
 
 	}
-	
+
 }
