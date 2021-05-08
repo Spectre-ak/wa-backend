@@ -43,6 +43,16 @@ public class TemplateController {
 		return this.dataService.getAllProjects();
 	}
 
+	@GetMapping("/vendors")
+	public Set<String> getVendors() {
+		 return this.dataService.getVendors();
+	}
+
+	@GetMapping("/vendors/{id}")
+	public List<Map<String, String>> getVendorsById(@PathVariable int id) {
+		return this.dataService.getVendorsById(id);
+	}
+
 	@GetMapping("/projects/{id}")
 	public List getProjectsById(@PathVariable int id) throws Exception {
 		return this.dataService.getProjectsById(id);

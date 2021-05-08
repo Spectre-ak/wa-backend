@@ -44,6 +44,41 @@ public class DataService {
         return onProject;
     }
 
+    public Set<String> getVendors() {
+
+        List<Map<String, String>> resources = this.getAll();
+        List<Map<String, String>> vendors = new ArrayList<>();
+        Set<String> foundVendors = new HashSet<>();
+
+        for(Map vendor : resources)
+        {
+            String vendorName = vendor.get("Vendor").toString();
+            if(!vendorName.isEmpty() && !vendorName.equals(""))
+                foundVendors.add(vendorName);
+        }
+
+        return foundVendors;
+
+    }
+
+    public List<Map<String, String>> getVendorsById(int id) {
+
+        List<Map<String, String>> resources = this.getAll();
+        List<Map<String, String>> vendors = new ArrayList<>();
+
+        for(Map vendor : resources)
+        {
+            int value = 0;
+            String vendorName = vendor.get("Vendor").toString();
+            if(!vendorName.isEmpty() ) {
+                value = Integer.parseInt(vendorName.replaceAll("[^0-9]", ""));
+                if(id == value)
+                vendors.add(vendor);
+            }
+        }
+        return vendors;
+    }
+
     public Map<String, String> getResourceById(int id) {
 
         List<Map<String, String>> employees = this.getAll();
