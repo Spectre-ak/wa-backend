@@ -125,14 +125,19 @@ public class DataService {
 
     public Map<String, List<Map> > getRecommendations(Recommendation recommendation) {
         Map results = new HashMap();
-        extractEngineers();
         //TODO exception for incorrect role
+        Map employee = extractEngineers().get(0);
+        filterByAvailability(employee, recommendation.getDate());
 
         for(String role: recommendation.getRole())
         {
-            System.out.println(role);
-            results.put(role,filterResourcesByRole(extractEngineers(), role));
+            results.put(role, extractEngineers().stream()
+                    .filter(e -> filterByLocation(e, recommendation.getLocation()))
+                    .filter(resource -> filterByRole(resource, role))
+                    .collect(Collectors.toList()));
         }
+
+        // if product End Date < new Product Start Date
 
         results.entrySet().forEach(entry -> {
             System.out.println(entry);
@@ -142,7 +147,7 @@ public class DataService {
         //format date on engineer object
         //check against provided date
 
-        return null;
+        return results;
     }
 
     public List<Map<String, String>> extractEngineers() {
@@ -154,9 +159,21 @@ public class DataService {
         return engineers;
     }
 
-    public List<Map<String, String>> filterResourcesByRole(List<Map<String,
-            String>> resources, String role) {
-        return resources.stream().filter(e -> e.get("Role Level").equals(role))
-                .collect(Collectors.toList());
+    public boolean filterByRole(Map<String,
+            String> resource, String role) {
+        return resource.get("Role Level").equals(role);
     }
+
+    public boolean filterByLocation(Map<String, String> resource,
+                                    String location) {
+        return resource.get("Prod Build Location").equals(location);
+    }
+
+    public void filterByAvailability(Map<String, String> resource,
+                                        String date) {
+        System.out.println(resource.get("resource product end date"));
+        System.out.println(date);
+
+    }
+
 }
