@@ -50,13 +50,6 @@ public class TemplateController {
 	}
 
 	@GetMapping("/resources/{id}")
-	public Map<String, String> getResources(@PathVariable int id) {
-		return this.dataService.getResourceById(id);
-	}
-
-
-
-	@GetMapping("/resources/{id}")
 	public Map<String, String> getResourcesById(@PathVariable int id) {
 		return this.dataService.getResourceById(id);
 	}
