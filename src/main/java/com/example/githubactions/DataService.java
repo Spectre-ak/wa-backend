@@ -2,8 +2,11 @@ package com.example.githubactions;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.lang.Integer.parseInt;
 
 @Service
 public class DataService {
@@ -37,7 +40,7 @@ public class DataService {
             String productName = employee.get("Product").toString();
             int value = 0;
             if(productName != "")
-                value = Integer.parseInt(productName.replaceAll("[^0-9]", ""));
+                value = parseInt(productName.replaceAll("[^0-9]", ""));
             if(value == id) {
                 onProject.add(employee);
             }
@@ -55,7 +58,7 @@ public class DataService {
             String employeeName = employee.get("Name").toString();
             int value = 0;
             if(employeeName != "")
-                value = Integer.parseInt(employeeName.replaceAll("[^0-9]", ""));
+                value = parseInt(employeeName.replaceAll("[^0-9]", ""));
             if(value == id) {
                 return employee;
             }
@@ -90,7 +93,7 @@ public class DataService {
             int value = 0;
             String vendorName = vendor.get("Vendor").toString();
             if(!vendorName.isEmpty() ) {
-                value = Integer.parseInt(vendorName.replaceAll("[^0-9]", ""));
+                value = parseInt(vendorName.replaceAll("[^0-9]", ""));
                 if(id == value)
                 vendors.add(vendor);
             }
@@ -106,7 +109,7 @@ public class DataService {
             String productName = object.get("Product").toString();
             int value = 0;
             if(productName != "")
-                value = Integer.parseInt(productName.replaceAll("[^0-9]", ""));
+                value = parseInt(productName.replaceAll("[^0-9]", ""));
             if(value == id)
             {
                 List currentResources = this.getProjectResource(id);
@@ -127,25 +130,15 @@ public class DataService {
         Map results = new HashMap();
         //TODO exception for incorrect role
         Map employee = extractEngineers().get(0);
-        filterByAvailability(employee, recommendation.getDate());
 
         for(String role: recommendation.getRole())
         {
             results.put(role, extractEngineers().stream()
-                    .filter(e -> filterByLocation(e, recommendation.getLocation()))
+                    .filter(resource -> filterByLocation(resource, recommendation.getLocation()))
                     .filter(resource -> filterByRole(resource, role))
+                    .filter(resource -> filterByAvailability(resource, recommendation.getDate()))
                     .collect(Collectors.toList()));
         }
-
-        // if product End Date < new Product Start Date
-
-        results.entrySet().forEach(entry -> {
-            System.out.println(entry);
-        });
-
-        //filter by location
-        //format date on engineer object
-        //check against provided date
 
         return results;
     }
@@ -169,11 +162,30 @@ public class DataService {
         return resource.get("Prod Build Location").equals(location);
     }
 
-    public void filterByAvailability(Map<String, String> resource,
+    public boolean filterByAvailability(Map<String, String> resource,
                                         String date) {
-        System.out.println(resource.get("resource product end date"));
-        System.out.println(date);
+//        System.out.println(resource.get("resource product end date"));
+//        System.out.println(date);
+        LocalDate resourceProjectEndDate = formattedDate(resource.get("resource product end date"));
+        LocalDate resourceProjectStartDate = formattedDate(resource.get("resource product start date"));
+        LocalDate recommendationDate = formattedDate(date);
 
+        return resourceProjectEndDate.isBefore(recommendationDate);
+    }
+
+    /* Spreadsheet format 12/31/21 month/day/year
+    * Local date format 21/12/31 year/month/dayOfMonth*/
+    public LocalDate formattedDate(String date) {
+        String[] dateArr = date.split("/");
+        /* concat the beginning of the year */
+        dateArr[2] = "20" + dateArr[2];
+            LocalDate dateObject = LocalDate.of(
+                    Integer.parseInt(dateArr[2]),
+                    Integer.parseInt(dateArr[0]),
+                    Integer.parseInt(dateArr[1])
+            );
+
+        return dateObject;
     }
 
 }

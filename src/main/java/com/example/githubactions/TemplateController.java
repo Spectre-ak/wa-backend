@@ -69,80 +69,11 @@ public class TemplateController {
 		return this.dataService.getProjectsById(id);
 	}
 
-
-
-	@PostMapping("getRecommendations")
-	public String getRecommendations(
+	@PostMapping("recommendations")
+	public Map getRecommendations(
 			@RequestBody Recommendation recommendation)
 			throws Exception{
-		System.out.println("Template Controller Roles") ;
-		System.out.println(recommendation.toString());
-		this.dataService.getRecommendations(recommendation);
-		return null;
-	}
-
-	//Utility Methods for parsing Json
-	protected String mapToJson(Object obj) throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.writeValueAsString(obj);
-	}
-
-	//Object from Json
-	protected <T> T mapFromJson(String json, Class<T> clazz)
-			throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.readValue(json, clazz);
-	}
-
-
-	static HashMap<String,List<List<Object>>> getEngr(List<List<Object>> values){
-		HashMap<String,List<List<Object>>> hm=new HashMap<>();
-		hm.put("engr",new ArrayList<>());
-		hm.put("ux",new ArrayList<>());
-		hm.put("pm",new ArrayList<>());
-		hm.put("junior",new ArrayList<>());
-		hm.put("mid",new ArrayList<>());
-		hm.put("senior",new ArrayList<>());
-
-		for(List<Object> row:values) {
-			//System.out.println(row);
-			try {
-				if(row.get(2).toString().toLowerCase().equals("engr")) {
-					List<List<Object>> list=hm.get("engr");
-					list.add(row);
-					hm.put("engr",list);
-				}
-				else if(row.get(2).toString().toLowerCase().equals("ux")) {
-					List<List<Object>> list=hm.get("ux");
-					list.add(row);
-					hm.put("ux",list);
-				}
-				else if(row.get(2).toString().toLowerCase().equals("pm")) {
-					List<List<Object>> list=hm.get("pm");
-					list.add(row);
-					hm.put("pm",list);
-				}
-
-				if(row.get(3).toString().toLowerCase().equals("junior")) {
-					List<List<Object>> list=hm.get("junior");
-					list.add(row);
-					hm.put("junior",list);
-				}else if(row.get(3).toString().toLowerCase().equals("mid")) {
-					List<List<Object>> list=hm.get("mid");
-					list.add(row);
-					hm.put("mid",list);
-				}else if(row.get(3).toString().toLowerCase().equals("senior")) {
-					List<List<Object>> list=hm.get("senior");
-					list.add(row);
-					hm.put("senior",list);
-				}
-
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
-		}
-		return hm;
+		return this.dataService.getRecommendations(recommendation);
 	}
 
 	@GetMapping("/resources/{id}")
