@@ -7,15 +7,14 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.Sheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@CrossOrigin({ "http://localhost:3000/", "friendly-doodle.azurewebsites.net","https://woay.azurewebsites.net/"
+		,"https://woay.azurewebsites.net/" , "woay.azurewebsites.net" })
 @RestController
 public class TemplateController {
 
@@ -31,7 +30,6 @@ public class TemplateController {
 		if(checkCred() || checkToken()) {
 			return "downloaded";
 		}
-
 		return "application satarted";
 	}
 
@@ -47,14 +45,15 @@ public class TemplateController {
 	}
 
 	@GetMapping("/projects/{id}")
-	public Map<String, String> getProjectsById(@PathVariable int id) throws Exception {
+	public List getProjectsById(@PathVariable int id) throws Exception {
 		return this.dataService.getProjectsById(id);
 	}
 
 
-
-
-
+	@GetMapping("/resources/{id}")
+	public List<Map<String, String>> getResources(@PathVariable int id) {
+		return this.dataService.getProjectResource(id);
+	}
 
 	boolean checkCred() {
 		File f=new File("credentialsSheets.json");

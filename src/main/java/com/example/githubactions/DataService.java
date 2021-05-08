@@ -28,10 +28,24 @@ public class DataService {
 
     public List<Map<String, String>> getProjectResource(int id) {
         //obtain resources per project
-        return null;
+        List<Map<String, String>> employees = this.getAll();
+        List<Map<String, String>> onProject = new ArrayList<>();
+
+        for(Map employee : employees)
+        {
+            String productName = employee.get("Product").toString();
+            int value = 0;
+            if(productName != "")
+                value = Integer.parseInt(productName.replaceAll("[^0-9]", ""));
+            if(value == id) {
+                onProject.add(employee);
+            }
+        }
+        return onProject;
     }
 
-    public Map<String, String> getProjectsById(int id) throws InformationNotFoundException {
+    public ArrayList getProjectsById(int id) throws InformationNotFoundException {
+        ArrayList<Object> projectResources = new ArrayList<>();
         Map<String, String>  product = new HashMap();
         for(Map object: this.getAll())
         {
@@ -41,15 +55,17 @@ public class DataService {
                 value = Integer.parseInt(productName.replaceAll("[^0-9]", ""));
             if(value == id)
             {
+                List currentResources = this.getProjectResource(id);
                 product.put("Product", object.get("Product").toString());
                 product.put("Prod Build Location", object.get("Prod Build " + "Location").toString());
                 product.put("Prod Start Date", object.get("Prod Start Date").toString());
                 product.put("Prod End Date",object.get("Prod End Date").toString());
-
-                return product;
+                projectResources.add(product);
+                projectResources.add(currentResources);
+                return projectResources;
             } else {
             }
         }
-        return product;
+        return projectResources;
     }
 }
