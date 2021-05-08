@@ -21,7 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@CrossOrigin({ "http://localhost:3000/", "friendly-doodle.azurewebsites.net","https://woay.azurewebsites.net/"
+@CrossOrigin({ "http://localhost:3000/", "friendly-doodle.azurewebsites.net","https://woay.azurewebsites.net"
 		,"https://woay.azurewebsites.net/" , "woay.azurewebsites.net" ,"http://localhost:3000"})
 @RestController
 public class TemplateController {
