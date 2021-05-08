@@ -33,7 +33,7 @@ public class TemplateController {
 	}
 
 	@GetMapping("/projects")
-	public Set<Object> getAllProjects(
+	public Set getAllProjects(
 			@RequestParam(value = "startDate", required = false) String startDate,
 			@RequestParam(value = "endDate", required = false) String endDate){
 		if(startDate != null && endDate != null)

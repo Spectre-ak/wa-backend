@@ -25,28 +25,40 @@ public class DataService {
     }
 
     public Set<Object> getAllProjects(){
-        Set<Object> products = new HashSet<>();
+        Set<Object> projectResources = new HashSet<>();
+
         for(Map object: this.getAll())
         {
-            products.add(object.get("Product"));
+            Map<String, String>  project = new HashMap();
+
+            project.put("Product", object.get("Product").toString());
+            project.put("Prod Build Location", object.get("Prod Build Location").toString());
+            project.put("Prod Start Date", object.get("Prod Start Date").toString());
+            project.put("Prod End Date",object.get("Prod End Date").toString());
+            projectResources.add(project);
         }
-        return products;
+        return projectResources;
     }
 
-    public Set<Object> getAllProjectsBetweenDates(String startDate,
+    public Set getAllProjectsBetweenDates(String startDate,
                                                   String endDate) {
+        Set<Object> projectResources = new HashSet<>();
+
         //TODO exception if incorrect format in date String
-        Set<Object> projects = new HashSet<>();
-        System.out.println("Getting all projects between dates");
 
         for(Map object: this.getAll().stream().filter(
                 e -> filterProjectsBetweenDates(startDate, endDate, e)
         ).collect(Collectors.toList()))
         {
-            projects.add(object.get("Product"));
+            Map<String, String>  project = new HashMap();
+            project.put("Product", object.get("Product").toString());
+            project.put("Prod Build Location", object.get("Prod Build Location").toString());
+            project.put("Prod Start Date", object.get("Prod Start Date").toString());
+            project.put("Prod End Date",object.get("Prod End Date").toString());
+            projectResources.add(project);
         }
 
-        return projects;
+        return projectResources;
     }
 
     public List<Map<String, String>> getResourcesByProperty(String property,
@@ -137,7 +149,7 @@ public class DataService {
         return vendors;
     }
 
-    public ArrayList getProjectsById(int id) throws InformationNotFoundException {
+    public ArrayList getProjectsById(int id) {
         ArrayList<Object> projectResources = new ArrayList<>();
         Map<String, String>  product = new HashMap();
         for(Map object: this.getAll())
@@ -188,6 +200,11 @@ public class DataService {
         return engineers;
     }
 
+    /**
+     * @param resource - resource from which date will be extracted from
+     * @param role- role that we are extracting from Post Request
+     * @return boolean results for whether a resource is within a location
+     */
     public boolean filterByRole(Map<String,
             String> resource, String role) {
         return resource.get("Role Level").equals(role);
@@ -239,7 +256,7 @@ public class DataService {
                 projectStartDate.isEqual(queryStartDate) && projectEndDate.isBefore(queryEndDate);
     }
 
-    /*
+    /**
     Spreadsheet Date Format: 12/31/21 month/day/year
     Need to convert to LocalDate for comparison
     JS Input Date Format: "date":"2021-05-13"
