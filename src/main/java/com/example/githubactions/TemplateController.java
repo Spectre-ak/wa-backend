@@ -33,7 +33,6 @@ public class TemplateController {
 		return "application satarted";
 	}
 
-
 	@GetMapping("/all")
 	public List<Map<String, String>> getAll() {
 		return this.dataService.getAll();
@@ -51,7 +50,11 @@ public class TemplateController {
 
 	@GetMapping("/resources/{id}")
 	public Map<String, String> getResourcesById(@PathVariable int id) {
-		return this.dataService.getResourceById(id);
+		Map<String, String> foundResource = this.dataService.getResourceById(id);
+		if(foundResource.isEmpty()) {
+			foundResource.put("Resource " + id, "Does Not Exists");
+		}
+			return foundResource;
 	}
 
 	boolean checkCred() {
