@@ -44,6 +44,24 @@ public class DataService {
         return onProject;
     }
 
+    public Map<String, String> getResourceById(int id) {
+
+        List<Map<String, String>> employees = this.getAll();
+        Map<String, String> foundEmployee = new HashMap<>();
+
+        for(Map employee : employees)
+        {
+            String employeeName = employee.get("Name").toString();
+            int value = 0;
+            if(employeeName != "")
+                value = Integer.parseInt(employeeName.replaceAll("[^0-9]", ""));
+            if(value == id) {
+                return employee;
+            }
+        }
+        return foundEmployee;
+    }
+
     public ArrayList getProjectsById(int id) throws InformationNotFoundException {
         ArrayList<Object> projectResources = new ArrayList<>();
         Map<String, String>  product = new HashMap();

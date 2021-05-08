@@ -49,10 +49,16 @@ public class TemplateController {
 		return this.dataService.getProjectsById(id);
 	}
 
+	@GetMapping("/resources/{id}")
+	public Map<String, String> getResources(@PathVariable int id) {
+		return this.dataService.getResourceById(id);
+	}
+
+
 
 	@GetMapping("/resources/{id}")
-	public List<Map<String, String>> getResources(@PathVariable int id) {
-		return this.dataService.getProjectResource(id);
+	public Map<String, String> getResourcesById(@PathVariable int id) {
+		return this.dataService.getResourceById(id);
 	}
 
 	boolean checkCred() {
