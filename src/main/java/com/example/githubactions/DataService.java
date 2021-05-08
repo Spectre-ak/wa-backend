@@ -30,6 +30,22 @@ public class DataService {
         return products;
     }
 
+    public Set<Object> getAllProjectsBetweenDates(String startDate,
+                                                  String endDate) {
+        //TODO exception if incorrect format in date String
+        Set<Object> projects = new HashSet<>();
+        System.out.println("Getting all projects between dates");
+
+        for(Map object: this.getAll().stream().filter(
+                e -> filterProjectsBetweenDates(startDate, endDate, e)
+        ).collect(Collectors.toList()))
+        {
+            projects.add(object.get("Product"));
+        }
+
+        return projects;
+    }
+
     public List<Map<String, String>> getProjectResource(int id) {
         //obtain resources per project
         List<Map<String, String>> employees = this.getAll();
@@ -164,13 +180,27 @@ public class DataService {
 
     public boolean filterByAvailability(Map<String, String> resource,
                                         String date) {
-//        System.out.println(resource.get("resource product end date"));
-//        System.out.println(date);
+
         LocalDate resourceProjectEndDate = formattedDate(resource.get("resource product end date"));
-        LocalDate resourceProjectStartDate = formattedDate(resource.get("resource product start date"));
         LocalDate recommendationDate = formattedDate(date);
 
         return resourceProjectEndDate.isBefore(recommendationDate);
+    }
+
+    public boolean filterProjectsBetweenDates(String startDate,
+                                              String endDate, Map project)
+    {
+        LocalDate projectStartDate = formattedDate((String) project.get("Prod" +
+                " Start Date"));
+        LocalDate projectEndDate = formattedDate((String) project.get("Prod " +
+                "End Date"));
+        LocalDate queryStartDate = formattedDate(startDate);
+        LocalDate queryEndDate = formattedDate(endDate);
+
+        return projectStartDate.isAfter(queryStartDate) && projectEndDate.isBefore(queryEndDate) ||
+                projectStartDate.isEqual(queryStartDate) && projectEndDate.isEqual(queryEndDate) ||
+                projectStartDate.isAfter(queryStartDate) && projectEndDate.isEqual(queryEndDate) ||
+                projectStartDate.isEqual(queryStartDate) && projectEndDate.isBefore(queryEndDate);
     }
 
     /* Spreadsheet format 12/31/21 month/day/year
@@ -200,7 +230,6 @@ public class DataService {
             );
             return dateObject;
         }
-
         return dateObject;
     }
 

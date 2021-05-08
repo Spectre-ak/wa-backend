@@ -49,10 +49,15 @@ public class TemplateController {
 		return this.dataService.getAll();
 	}
 
-	@CrossOrigin({ "http://localhost:3000/", "friendly-doodle.azurewebsites.net","https://woay.azurewebsites.net/"
-		,"https://woay.azurewebsites.net/" , "woay.azurewebsites.net" ,"http://localhost:3000"})
+
 	@GetMapping("/projects")
-	public Set<Object> getAllProjects(){
+	public Set<Object> getAllProjects(
+			@RequestParam(value = "startDate", required = false) String startDate,
+			@RequestParam(value = "endDate", required = false) String endDate){
+		if(startDate != null && endDate != null)
+		{
+			return this.dataService.getAllProjectsBetweenDates(startDate, endDate);
+		}
 		return this.dataService.getAllProjects();
 	}
 
