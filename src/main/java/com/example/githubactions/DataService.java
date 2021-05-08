@@ -174,16 +174,32 @@ public class DataService {
     }
 
     /* Spreadsheet format 12/31/21 month/day/year
+    JS Input Date Format
+    "date":"2021-05-13"
     * Local date format 21/12/31 year/month/dayOfMonth*/
     public LocalDate formattedDate(String date) {
-        String[] dateArr = date.split("/");
-        /* concat the beginning of the year */
-        dateArr[2] = "20" + dateArr[2];
-            LocalDate dateObject = LocalDate.of(
+        String[] dateArr;
+        LocalDate dateObject = LocalDate.of(2021,12,3);
+        if(date.indexOf('-') != -1)
+        {
+            dateArr = date.split("-");
+            dateObject = LocalDate.of(
+                    Integer.parseInt(dateArr[0]),
+                    Integer.parseInt(dateArr[1]),
+                    Integer.parseInt(dateArr[2]));
+            return dateObject;
+        } else if(date.indexOf('/') != -1) {
+
+            dateArr = date.split("/");
+            /* concat the beginning of the year */
+            dateArr[2] = "20" + dateArr[2];
+            dateObject = LocalDate.of(
                     Integer.parseInt(dateArr[2]),
                     Integer.parseInt(dateArr[0]),
                     Integer.parseInt(dateArr[1])
             );
+            return dateObject;
+        }
 
         return dateObject;
     }
