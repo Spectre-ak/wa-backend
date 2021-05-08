@@ -273,12 +273,27 @@ public class SheetUtils {
 		return "added";
 	}
 	
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	@CrossOrigin({"http://localhost:3000","http://localhost:44"})
-	public ResponseEntity<String> singleSignOn(HttpServletResponse response) {
-
-	    response.addCookie(new Cookie("heroku-nav-data", "adad"));
-	    return new ResponseEntity<String>("a",HttpStatus.OK);    
+	@GetMapping("/test22")
+	public String testSheet() {
+		try {
+			final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+			final String spreadsheetId = "1HeohQ3OBDlKtEzop1lV34BVX3WM--tLl_oCuf5Md3hQ";
+			final String range = "!A:J";
+			Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+					.setApplicationName(APPLICATION_NAME).build();
+			ValueRange response = service.spreadsheets().values().get(spreadsheetId, range).execute();
+			List<List<Object>> values = response.getValues();
+			String reString="";
+			for (List row : values) {
+				reString+=row.toString();
+				System.out.println(row);
+			}
+			
+			return reString;
+		}
+		catch (Exception e) {
+			return e.getMessage();
+		}
 
 	}
 	
