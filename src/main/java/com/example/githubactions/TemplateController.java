@@ -92,6 +92,61 @@ public class TemplateController {
 			return foundResource;
 	}
 
+	//ROLE && Role Level
+	@GetMapping("senior")
+	public List<Map<String, String>> getSeniorRole() {
+		return this.dataService.getResourcesByProperty("Role Level",
+				"Senior");
+	}
+//
+//	@GetMapping("mid")
+//	public List<Map<String, String>> getMidRole(@PathVariable int id) {
+//		Map<String, String> foundResource = this.dataService.getResourceById(id);
+//		if(foundResource.isEmpty()) {
+//			foundResource.put("Resource " + id, "Does Not Exists");
+//		}
+//		return foundResource;
+//	}
+//
+//	@GetMapping("junior")
+//	public List<Map<String, String>> getJuniorRole(@PathVariable int id) {
+//		Map<String, String> foundResource = this.dataService.getResourceById(id);
+//		if(foundResource.isEmpty()) {
+//			foundResource.put("Resource " + id, "Does Not Exists");
+//		}
+//		return foundResource;
+//	}
+//
+//	@GetMapping("engr")
+//	public List<Map<String, String>> getEngineer(@PathVariable int id) {
+//		Map<String, String> foundResource = this.dataService.getResourceById(id);
+//		if(foundResource.isEmpty()) {
+//			foundResource.put("Resource " + id, "Does Not Exists");
+//		}
+//		return foundResource;
+//	}
+//
+//	@GetMapping("ux")
+//	public List<Map<String, String>> getUX(@PathVariable int id) {
+//		Map<String, String> foundResource = this.dataService.getResourceById(id);
+//		if(foundResource.isEmpty()) {
+//			foundResource.put("Resource " + id, "Does Not Exists");
+//		}
+//		return foundResource;
+//	}
+//
+//	@GetMapping("pm")
+//	public List<Map<String, String>> getPM(@PathVariable int id) {
+//		Map<String, String> foundResource = this.dataService.getResourceById(id);
+//		if(foundResource.isEmpty()) {
+//			foundResource.put("Resource " + id, "Does Not Exists");
+//		}
+//		return foundResource;
+//	}
+//
+
+
+
 	boolean checkCred() {
 		File f=new File("credentialsSheets.json");
 		if(f.exists()) {

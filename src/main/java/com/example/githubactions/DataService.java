@@ -46,6 +46,25 @@ public class DataService {
         return projects;
     }
 
+    public List<Map<String, String>> getResourcesByProperty(String property,
+                                                            String type) {
+        List<Map<String, String>> resources = this.getAll();
+        List<Map<String, String>> foundResources = new ArrayList<>();
+
+        System.out.println(property + " " + type);
+
+        for(Map resource: resources) {
+            try {
+                if (resource.get(property).equals(type)) {
+                    foundResources.add(resource);
+                }
+            } catch (Exception ex) {
+
+            }
+        }
+        return foundResources;
+    }
+
     public List<Map<String, String>> getProjectResource(int id) {
         //obtain resources per project
         List<Map<String, String>> employees = this.getAll();
