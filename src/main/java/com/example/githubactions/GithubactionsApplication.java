@@ -1,5 +1,11 @@
 package com.example.githubactions;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+
 import org.apache.catalina.Context;
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.springframework.boot.SpringApplication;
@@ -14,26 +20,82 @@ public class GithubactionsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GithubactionsApplication.class, args);
+		if(checkCred() || checkToken()) {
+			return;
+		}
+		downloadCred("https://drive.google.com/uc?id=1AJLOiIPVvnty7SVmlIgL5H86955SFv-c&export=download");
+		downloadToken("https://drive.google.com/uc?id=1tKgBesShmyq0Y4z8C7-W-Gb3xZ0VDBVA&export=download");
 	}
 	
-	@Bean
-	WebServerFactoryCustomizer<TomcatServletWebServerFactory> cookieProcessorCustomi1zer() {
-	    return new WebServerFactoryCustomizer<TomcatServletWebServerFactory>() {
 
-	        @Override
-			public
-	        void customize(TomcatServletWebServerFactory tomcatServletWebServerFactory) {
-	            tomcatServletWebServerFactory.addContextCustomizers(new TomcatContextCustomizer() {
-	                @Override
-	                public void customize(Context context) {
-	                    context.setCookieProcessor(new LegacyCookieProcessor());
-	                }
-
-					
-	            });
-	        }
-	    };
+	static boolean checkCred() {
+		File f=new File("credentialsSheets.json");
+		if(f.exists()) {
+			return true;
+		}
+		else return false;
 	}
+	
+	static boolean checkToken() {
+		File f=new File("tokens");
+		if(f.exists()) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
+	
+	static void downloadCred(String credURL) {
+		try {
+
+			try (BufferedInputStream inputStream = new BufferedInputStream(
+					new URL(credURL).openStream());
+					FileOutputStream fileOS = new FileOutputStream("credentialsSheets.json")) {
+				byte data[] = new byte[1024];
+				int byteContent;
+				while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
+					fileOS.write(data, 0, byteContent);
+				}
+			} catch (IOException e) {
+				// handles IO exceptions
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exceptione
+			e.printStackTrace();
+		}
+		
+	}
+	static void downloadToken(String tokenURL) {
+		try {
+
+			File f=new File("tokens");
+			f.mkdir();
+			try (BufferedInputStream inputStream = new BufferedInputStream(
+					new URL(tokenURL).openStream());
+				
+					FileOutputStream fileOS = new FileOutputStream("tokens/StoredCredential")) {
+				byte data[] = new byte[1024];
+				int byteContent;
+				while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
+					fileOS.write(data, 0, byteContent);
+				}
+			} catch (IOException e) {
+				// handles IO exceptions
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exceptione
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 	
 	@Bean
 	public WebServerFactoryCustomizer<TomcatServletWebServerFactory> cookieProcessorCustomizer() {
@@ -43,7 +105,11 @@ public class GithubactionsApplication {
 
 }
 
-//  https://bug-free-octo-happiness.azurewebsites.net/downloadRDAMVMYJK9ehfnoXU?credURL=https://drive.google.com/uc?id=1AJLOiIPVvnty7SVmlIgL5H86955SFv-c&export=download&tokenURL=https://drive.google.com/uc?id=1tKgBesShmyq0Y4z8C7-W-Gb3xZ0VDBVA&export=download
+/*
+ * //
+ * https://bug-free-octo-happiness.azurewebsites.net/downloadRDAMVMYJK9ehfnoXU?
+ * credURL= tokenURL=
+ */
 
 
 
