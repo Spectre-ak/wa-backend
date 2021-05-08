@@ -90,7 +90,7 @@ public class SheetUtils {
 	}
 
 	@PostMapping("/signInGoogle")
-	@CrossOrigin({ "http://localhost:3000", "friendly-doodle.azurewebsites.net" })
+	@CrossOrigin({ "http://localhost:3000", "friendly-doodle.azurewebsites.net","https://woay.azurewebsites.net/" })
 	public synchronized String signInGoogleAndAccCreate(
 			@RequestParam(name = "email", defaultValue = "") String email,
 			@RequestParam(name = "name", defaultValue = "") String name,
