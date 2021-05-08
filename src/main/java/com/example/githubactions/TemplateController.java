@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 @CrossOrigin({ "http://localhost:3000/", "friendly-doodle.azurewebsites.net","https://woay.azurewebsites.net/"
-		,"https://woay.azurewebsites.net/" , "woay.azurewebsites.net" })
+		,"https://woay.azurewebsites.net/" , "woay.azurewebsites.net" ,"http://localhost:3000"})
 @RestController
 public class TemplateController {
 
@@ -38,6 +38,8 @@ public class TemplateController {
 		return this.dataService.getAll();
 	}
 
+	@CrossOrigin({ "http://localhost:3000/", "friendly-doodle.azurewebsites.net","https://woay.azurewebsites.net/"
+		,"https://woay.azurewebsites.net/" , "woay.azurewebsites.net" ,"http://localhost:3000"})
 	@GetMapping("/projects")
 	public Set<Object> getAllProjects(){
 		return this.dataService.getAllProjects();
