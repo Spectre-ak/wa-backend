@@ -1,5 +1,8 @@
-package com.example.githubactions;
+package com.example.githubactions.service;
 
+import com.example.githubactions.InformationNotFoundException;
+import com.example.githubactions.Recommendation;
+import com.example.githubactions.SheetUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -50,8 +53,6 @@ public class DataService {
                                                             String type) {
         List<Map<String, String>> resources = this.getAll();
         List<Map<String, String>> foundResources = new ArrayList<>();
-
-        System.out.println(property + " " + type);
 
         for(Map resource: resources) {
             try {
@@ -192,11 +193,21 @@ public class DataService {
         return resource.get("Role Level").equals(role);
     }
 
+    /**
+     * @param resource - resource from which date will be extracted from
+     * @param location- location input from Post Request
+     * @return boolean results for whether a resource is within a location
+     */
     public boolean filterByLocation(Map<String, String> resource,
                                     String location) {
         return resource.get("Prod Build Location").equals(location);
     }
 
+    /**
+     * @param resource - resource from which date will be extracted from
+     * @param date - input from Post Request
+     * @return boolean results for whether a date is before a specific date
+     */
     public boolean filterByAvailability(Map<String, String> resource,
                                         String date) {
 
@@ -206,15 +217,21 @@ public class DataService {
         return resourceProjectEndDate.isBefore(recommendationDate);
     }
 
+    /**
+     * Checks time between start and end as well as conditions including
+     * a test that starts / ends on the query string
+     */
     public boolean filterProjectsBetweenDates(String startDate,
                                               String endDate, Map project)
     {
-        LocalDate projectStartDate = formattedDate((String) project.get("Prod" +
-                " Start Date"));
-        LocalDate projectEndDate = formattedDate((String) project.get("Prod " +
-                "End Date"));
-        LocalDate queryStartDate = formattedDate(startDate);
-        LocalDate queryEndDate = formattedDate(endDate);
+        LocalDate projectStartDate =
+                formattedDate((String) project.get("Prod Start Date"));
+        LocalDate projectEndDate =
+                formattedDate((String) project.get("Prod End Date"));
+        LocalDate queryStartDate =
+                formattedDate(startDate);
+        LocalDate queryEndDate =
+                formattedDate(endDate);
 
         return projectStartDate.isAfter(queryStartDate) && projectEndDate.isBefore(queryEndDate) ||
                 projectStartDate.isEqual(queryStartDate) && projectEndDate.isEqual(queryEndDate) ||
@@ -222,10 +239,12 @@ public class DataService {
                 projectStartDate.isEqual(queryStartDate) && projectEndDate.isBefore(queryEndDate);
     }
 
-    /* Spreadsheet format 12/31/21 month/day/year
-    JS Input Date Format
-    "date":"2021-05-13"
-    * Local date format 21/12/31 year/month/dayOfMonth*/
+    /*
+    Spreadsheet Date Format: 12/31/21 month/day/year
+    Need to convert to LocalDate for comparison
+    JS Input Date Format: "date":"2021-05-13"
+    Local date format 21/12/31 year/month/dayOfMonth
+    */
     public LocalDate formattedDate(String date) {
         String[] dateArr;
         LocalDate dateObject = LocalDate.of(2021,12,3);

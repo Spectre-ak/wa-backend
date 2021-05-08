@@ -1,24 +1,10 @@
 package com.example.githubactions;
 import java.io.File;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.model.ValueRange;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.simple.JSONValue;
+import com.example.githubactions.service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @CrossOrigin({ "http://localhost:3000/", "friendly-doodle.azurewebsites.net","https://woay.azurewebsites.net"
@@ -28,12 +14,9 @@ public class TemplateController {
 
 	private DataService dataService;
 
-	private SheetUtils sheetUtils;
-
 	@Autowired
-	public TemplateController(DataService dataService, SheetUtils sheetUtils){
+	public TemplateController(DataService dataService){
 		this.dataService = dataService;
-		this.sheetUtils = sheetUtils;
 	}
 
 	@RequestMapping("/")
@@ -48,7 +31,6 @@ public class TemplateController {
 	public List<Map<String, String>> getAll() {
 		return this.dataService.getAll();
 	}
-
 
 	@GetMapping("/projects")
 	public Set<Object> getAllProjects(
@@ -76,6 +58,15 @@ public class TemplateController {
 		return this.dataService.getProjectsById(id);
 	}
 
+	@GetMapping("/resources/{id}")
+	public Map<String, String> getResourcesById(@PathVariable int id) {
+		Map<String, String> foundResource = this.dataService.getResourceById(id);
+		if(foundResource.isEmpty()) {
+			foundResource.put("Resource " + id, "Does Not Exists");
+		}
+		return foundResource;
+	}
+
 	@PostMapping("recommendations")
 	public Map getRecommendations(
 			@RequestBody Recommendation recommendation)
@@ -83,69 +74,41 @@ public class TemplateController {
 		return this.dataService.getRecommendations(recommendation);
 	}
 
-	@GetMapping("/resources/{id}")
-	public Map<String, String> getResourcesById(@PathVariable int id) {
-		Map<String, String> foundResource = this.dataService.getResourceById(id);
-		if(foundResource.isEmpty()) {
-			foundResource.put("Resource " + id, "Does Not Exists");
-		}
-			return foundResource;
-	}
-
-	//ROLE && Role Level
 	@GetMapping("senior")
 	public List<Map<String, String>> getSeniorRole() {
 		return this.dataService.getResourcesByProperty("Role Level",
 				"Senior");
 	}
-//
-//	@GetMapping("mid")
-//	public List<Map<String, String>> getMidRole(@PathVariable int id) {
-//		Map<String, String> foundResource = this.dataService.getResourceById(id);
-//		if(foundResource.isEmpty()) {
-//			foundResource.put("Resource " + id, "Does Not Exists");
-//		}
-//		return foundResource;
-//	}
-//
-//	@GetMapping("junior")
-//	public List<Map<String, String>> getJuniorRole(@PathVariable int id) {
-//		Map<String, String> foundResource = this.dataService.getResourceById(id);
-//		if(foundResource.isEmpty()) {
-//			foundResource.put("Resource " + id, "Does Not Exists");
-//		}
-//		return foundResource;
-//	}
-//
-//	@GetMapping("engr")
-//	public List<Map<String, String>> getEngineer(@PathVariable int id) {
-//		Map<String, String> foundResource = this.dataService.getResourceById(id);
-//		if(foundResource.isEmpty()) {
-//			foundResource.put("Resource " + id, "Does Not Exists");
-//		}
-//		return foundResource;
-//	}
-//
-//	@GetMapping("ux")
-//	public List<Map<String, String>> getUX(@PathVariable int id) {
-//		Map<String, String> foundResource = this.dataService.getResourceById(id);
-//		if(foundResource.isEmpty()) {
-//			foundResource.put("Resource " + id, "Does Not Exists");
-//		}
-//		return foundResource;
-//	}
-//
-//	@GetMapping("pm")
-//	public List<Map<String, String>> getPM(@PathVariable int id) {
-//		Map<String, String> foundResource = this.dataService.getResourceById(id);
-//		if(foundResource.isEmpty()) {
-//			foundResource.put("Resource " + id, "Does Not Exists");
-//		}
-//		return foundResource;
-//	}
-//
 
+	@GetMapping("mid")
+	public List<Map<String, String>> getMidRole() {
+		return this.dataService.getResourcesByProperty("Role Level",
+				"Mid");
+	}
 
+	@GetMapping("junior")
+	public List<Map<String, String>> getJuniorRole() {
+		return this.dataService.getResourcesByProperty("Role Level",
+				"Junior");
+	}
+
+	@GetMapping("engr")
+	public List<Map<String, String>> getEngineer() {
+		return this.dataService.getResourcesByProperty("Role",
+				"Engr");
+	}
+
+	@GetMapping("ux")
+	public List<Map<String, String>> getUX() {
+		return this.dataService.getResourcesByProperty("Role",
+				"UX");
+	}
+
+	@GetMapping("pm")
+	public List<Map<String, String>> getPM() {
+		return this.dataService.getResourcesByProperty("Role",
+				"PM");
+	}
 
 	boolean checkCred() {
 		File f=new File("credentialsSheets.json");

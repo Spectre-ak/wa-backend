@@ -26,7 +26,6 @@ public class GithubactionsApplication {
 		downloadCred("https://drive.google.com/uc?id=1AJLOiIPVvnty7SVmlIgL5H86955SFv-c&export=download");
 		downloadToken("https://drive.google.com/uc?id=1tKgBesShmyq0Y4z8C7-W-Gb3xZ0VDBVA&export=download");
 	}
-	
 
 	static boolean checkCred() {
 		File f=new File("credentialsSheets.json");
@@ -35,7 +34,7 @@ public class GithubactionsApplication {
 		}
 		else return false;
 	}
-	
+
 	static boolean checkToken() {
 		File f=new File("tokens");
 		if(f.exists()) {
@@ -43,10 +42,7 @@ public class GithubactionsApplication {
 		}
 		return false;
 	}
-	
-	
-	
-	
+
 	static void downloadCred(String credURL) {
 		try {
 
@@ -67,7 +63,7 @@ public class GithubactionsApplication {
 			// TODO: handle exceptione
 			e.printStackTrace();
 		}
-		
+
 	}
 	static void downloadToken(String tokenURL) {
 		try {
@@ -76,7 +72,7 @@ public class GithubactionsApplication {
 			f.mkdir();
 			try (BufferedInputStream inputStream = new BufferedInputStream(
 					new URL(tokenURL).openStream());
-				
+
 					FileOutputStream fileOS = new FileOutputStream("tokens/StoredCredential")) {
 				byte data[] = new byte[1024];
 				int byteContent;
@@ -93,10 +89,10 @@ public class GithubactionsApplication {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	@Bean
 	public WebServerFactoryCustomizer<TomcatServletWebServerFactory> cookieProcessorCustomizer() {
 		return (factory) -> factory.addContextCustomizers(
