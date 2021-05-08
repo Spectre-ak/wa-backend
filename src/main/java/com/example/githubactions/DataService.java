@@ -3,6 +3,7 @@ package com.example.githubactions;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DataService {
@@ -44,6 +45,24 @@ public class DataService {
         return onProject;
     }
 
+    public Map<String, String> getResourceById(int id) {
+
+        List<Map<String, String>> employees = this.getAll();
+        Map<String, String> foundEmployee = new HashMap<>();
+
+        for(Map employee : employees)
+        {
+            String employeeName = employee.get("Name").toString();
+            int value = 0;
+            if(employeeName != "")
+                value = Integer.parseInt(employeeName.replaceAll("[^0-9]", ""));
+            if(value == id) {
+                return employee;
+            }
+        }
+        return foundEmployee;
+    }
+
     public Set<String> getVendors() {
 
         List<Map<String, String>> resources = this.getAll();
@@ -79,24 +98,6 @@ public class DataService {
         return vendors;
     }
 
-    public Map<String, String> getResourceById(int id) {
-
-        List<Map<String, String>> employees = this.getAll();
-        Map<String, String> foundEmployee = new HashMap<>();
-
-        for(Map employee : employees)
-        {
-            String employeeName = employee.get("Name").toString();
-            int value = 0;
-            if(employeeName != "")
-                value = Integer.parseInt(employeeName.replaceAll("[^0-9]", ""));
-            if(value == id) {
-                return employee;
-            }
-        }
-        return foundEmployee;
-    }
-
     public ArrayList getProjectsById(int id) throws InformationNotFoundException {
         ArrayList<Object> projectResources = new ArrayList<>();
         Map<String, String>  product = new HashMap();
@@ -120,5 +121,29 @@ public class DataService {
             }
         }
         return projectResources;
+    }
+
+    public HashMap getRecommendations(String[] roles, String date,
+                                      String location) {
+        extractEngineers();
+        //find engineers the specificed roles
+        //filter by location
+        //format date on engineer object
+        //check against provided date
+
+        return null;
+    }
+
+    public List<Map<String, String>> extractEngineers() {
+        List<Map<String, String>> allResources = this.getAll();
+        List<Map<String, String>> engineers = new ArrayList<>();
+        engineers =
+                allResources.stream().filter(e -> !e.get("Role Level").isEmpty())
+                        .collect(Collectors.toList());
+        for(Map engineer : engineers)
+        {
+            System.out.println(engineer);
+        }
+        return null;
     }
 }

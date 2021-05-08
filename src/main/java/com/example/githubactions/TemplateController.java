@@ -4,14 +4,15 @@ import java.io.File;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.model.Sheet;
+import com.google.api.services.sheets.v4.model.ValueRange;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @CrossOrigin({ "http://localhost:3000/", "friendly-doodle.azurewebsites.net","https://woay.azurewebsites.net/"
 		,"https://woay.azurewebsites.net/" , "woay.azurewebsites.net" })
@@ -20,9 +21,12 @@ public class TemplateController {
 
 	private DataService dataService;
 
+	private SheetUtils sheetUtils;
+
 	@Autowired
-	public TemplateController(DataService dataService){
+	public TemplateController(DataService dataService, SheetUtils sheetUtils){
 		this.dataService = dataService;
+		this.sheetUtils = sheetUtils;
 	}
 
 	@RequestMapping("/")
@@ -56,6 +60,67 @@ public class TemplateController {
 	@GetMapping("/projects/{id}")
 	public List getProjectsById(@PathVariable int id) throws Exception {
 		return this.dataService.getProjectsById(id);
+	}
+
+	@PostMapping("getRecommendations")
+	public String getRecommendations(
+			@RequestParam(value = "skills",defaultValue = "")String[] skills,
+			@RequestParam(value = "resourcesDemand",defaultValue = "")String resourcesDemand,
+			@RequestParam(value = "date",defaultValue ="")String date){
+			this.dataService.getRecommendations(skills, resourcesDemand, date);
+		return null;
+	}
+
+
+
+	static HashMap<String,List<List<Object>>> getEngr(List<List<Object>> values){
+		HashMap<String,List<List<Object>>> hm=new HashMap<>();
+		hm.put("engr",new ArrayList<>());
+		hm.put("ux",new ArrayList<>());
+		hm.put("pm",new ArrayList<>());
+		hm.put("junior",new ArrayList<>());
+		hm.put("mid",new ArrayList<>());
+		hm.put("senior",new ArrayList<>());
+
+		for(List<Object> row:values) {
+			//System.out.println(row);
+			try {
+				if(row.get(2).toString().toLowerCase().equals("engr")) {
+					List<List<Object>> list=hm.get("engr");
+					list.add(row);
+					hm.put("engr",list);
+				}
+				else if(row.get(2).toString().toLowerCase().equals("ux")) {
+					List<List<Object>> list=hm.get("ux");
+					list.add(row);
+					hm.put("ux",list);
+				}
+				else if(row.get(2).toString().toLowerCase().equals("pm")) {
+					List<List<Object>> list=hm.get("pm");
+					list.add(row);
+					hm.put("pm",list);
+				}
+
+				if(row.get(3).toString().toLowerCase().equals("junior")) {
+					List<List<Object>> list=hm.get("junior");
+					list.add(row);
+					hm.put("junior",list);
+				}else if(row.get(3).toString().toLowerCase().equals("mid")) {
+					List<List<Object>> list=hm.get("mid");
+					list.add(row);
+					hm.put("mid",list);
+				}else if(row.get(3).toString().toLowerCase().equals("senior")) {
+					List<List<Object>> list=hm.get("senior");
+					list.add(row);
+					hm.put("senior",list);
+				}
+
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		}
+		return hm;
 	}
 
 	@GetMapping("/resources/{id}")

@@ -83,6 +83,7 @@ public class SheetUtils {
 		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 	}
 
+	/** retrieves raw data set**/
 	public List<List<Object>> retrieveDataSet() {
 		List<List<Object>> values = new ArrayList<>();
 		try {
@@ -103,6 +104,7 @@ public class SheetUtils {
 		return values;
 	}
 
+	/** maps data set to json**/
 	public List<Map<String, String>> mapDataSet(List<List<Object>> lists) {
 		List<Map<String, String>> mappedList = new ArrayList<>();
 		List<Object> keys = lists.get(0);
