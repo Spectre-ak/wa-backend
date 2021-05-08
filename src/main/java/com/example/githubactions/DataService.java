@@ -123,10 +123,21 @@ public class DataService {
         return projectResources;
     }
 
-    public HashMap getRecommendations(String[] roles, String date,
-                                      String location) {
+    public Map<String, List<Map> > getRecommendations(Recommendation recommendation) {
+        Map results = new HashMap();
         extractEngineers();
-        //find engineers the specificed roles
+        //TODO exception for incorrect role
+
+        for(String role: recommendation.getRole())
+        {
+            System.out.println(role);
+            results.put(role,filterResourcesByRole(extractEngineers(), role));
+        }
+
+        results.entrySet().forEach(entry -> {
+            System.out.println(entry);
+        });
+
         //filter by location
         //format date on engineer object
         //check against provided date
@@ -140,10 +151,12 @@ public class DataService {
         engineers =
                 allResources.stream().filter(e -> !e.get("Role Level").isEmpty())
                         .collect(Collectors.toList());
-        for(Map engineer : engineers)
-        {
-            System.out.println(engineer);
-        }
-        return null;
+        return engineers;
+    }
+
+    public List<Map<String, String>> filterResourcesByRole(List<Map<String,
+            String>> resources, String role) {
+        return resources.stream().filter(e -> e.get("Role Level").equals(role))
+                .collect(Collectors.toList());
     }
 }

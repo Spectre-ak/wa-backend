@@ -1,15 +1,22 @@
 package com.example.githubactions;
 import java.io.File;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONStringer;
+import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -62,15 +69,30 @@ public class TemplateController {
 		return this.dataService.getProjectsById(id);
 	}
 
+
+
 	@PostMapping("getRecommendations")
 	public String getRecommendations(
-			@RequestParam(value = "skills",defaultValue = "")String[] skills,
-			@RequestParam(value = "resourcesDemand",defaultValue = "")String resourcesDemand,
-			@RequestParam(value = "date",defaultValue ="")String date){
-			this.dataService.getRecommendations(skills, resourcesDemand, date);
+			@RequestBody Recommendation recommendation)
+			throws Exception{
+		System.out.println("Template Controller Roles") ;
+		System.out.println(recommendation.toString());
+		this.dataService.getRecommendations(recommendation);
 		return null;
 	}
 
+	//Utility Methods for parsing Json
+	protected String mapToJson(Object obj) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper.writeValueAsString(obj);
+	}
+
+	//Object from Json
+	protected <T> T mapFromJson(String json, Class<T> clazz)
+			throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper.readValue(json, clazz);
+	}
 
 
 	static HashMap<String,List<List<Object>>> getEngr(List<List<Object>> values){
