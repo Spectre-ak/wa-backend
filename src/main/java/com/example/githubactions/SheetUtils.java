@@ -120,7 +120,8 @@ public class SheetUtils {
 	}
 
 	@PostMapping("/signInGoogle")
-	@CrossOrigin({ "http://localhost:3000", "friendly-doodle.azurewebsites.net" })
+	@CrossOrigin({ "http://localhost:3000", "friendly-doodle.azurewebsites.net","https://woay.azurewebsites.net/"
+		     ,"https://woay.azurewebsites.net","woay.azurewebsites.net"})
 	public synchronized String signInGoogleAndAccCreate(
 			@RequestParam(name = "email", defaultValue = "") String email,
 			@RequestParam(name = "name", defaultValue = "") String name,
@@ -307,9 +308,9 @@ public class SheetUtils {
 	@CrossOrigin({"http://localhost:3000","http://localhost:44"})
 	public ResponseEntity<String> singleSignOn(HttpServletResponse response) {
 
-	    response.addCookie(new Cookie("heroku-nav-data", "adad"));
-	    return new ResponseEntity<String>("a",HttpStatus.OK);
-
+		response.addCookie(new Cookie("heroku-nav-data", "adad"));
+		return new ResponseEntity<String>("a", HttpStatus.OK);
 	}
+
 
 }
