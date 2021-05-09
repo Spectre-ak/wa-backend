@@ -6,11 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
-import org.apache.catalina.Context;
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +43,6 @@ public class GithubactionsApplication {
 
 	static void downloadCred(String credURL) {
 		try {
-
 			try (BufferedInputStream inputStream = new BufferedInputStream(
 					new URL(credURL).openStream());
 					FileOutputStream fileOS = new FileOutputStream("credentialsSheets.json")) {

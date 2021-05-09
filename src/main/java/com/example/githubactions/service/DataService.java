@@ -1,14 +1,10 @@
 package com.example.githubactions.service;
 
-import com.example.githubactions.InformationNotFoundException;
-import com.example.githubactions.Recommendation;
 import com.example.githubactions.SheetUtils;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static java.lang.Integer.parseInt;
 
 @Service
