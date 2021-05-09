@@ -174,17 +174,31 @@ public class DataService {
         return projectResources;
     }
 
-    public Map<String, List<Map> > getRecommendations(Recommendation recommendation) {
+    public Map<String, List<Map> > getRecommendations(String date,
+                                                      String location,
+                                                      String roles) {
         Map results = new HashMap();
+
+        String newRole = roles.replace("[","");
+        newRole = newRole.replace("\"","");
+        newRole = newRole.replace("]","");
+        String[] splitRole = newRole.split(",");
+        location = location.replace("\"","");
+        location = location.replace(",","");
+        date = date.replace("\"","");
+
+        final String searchLocation = location;
+        final String searchDate = date;
+
         //TODO exception for incorrect role
         Map employee = extractEngineers().get(0);
 
-        for(String role: recommendation.getRole())
+        for(String role: splitRole )
         {
             results.put(role, extractEngineers().stream()
-                    .filter(resource -> filterByLocation(resource, recommendation.getLocation()))
-                    .filter(resource -> filterByRole(resource, role))
-                    .filter(resource -> filterByAvailability(resource, recommendation.getDate()))
+                    .filter(resource -> filterByLocation(resource, searchLocation))
+                    .filter(resource -> filterByRole(resource, role.toString()))
+                    .filter(resource -> filterByAvailability(resource, searchDate))
                     .collect(Collectors.toList()));
         }
 

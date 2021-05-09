@@ -3,6 +3,7 @@ import java.io.File;
 
 import com.example.githubactions.service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -67,11 +68,14 @@ public class TemplateController {
 		return foundResource;
 	}
 
-	@PostMapping("recommendations")
-	public Map getRecommendations(
-			@RequestBody Recommendation recommendation)
+	@PostMapping(value= "recommendations")
+	public Map getRecommendations (@RequestParam(name = "location",
+			defaultValue = "") String location,
+			@RequestParam(name = "role", defaultValue = "") String role,
+			@RequestParam(name = "date", defaultValue = "") String date)
 			throws Exception{
-		return this.dataService.getRecommendations(recommendation);
+
+			return this.dataService.getRecommendations(date, location, role);
 	}
 
 	@GetMapping("senior")

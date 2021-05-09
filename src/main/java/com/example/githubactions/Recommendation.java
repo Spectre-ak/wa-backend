@@ -8,6 +8,12 @@ public class Recommendation {
     private String location;
     private String date;
 
+    public Recommendation(List<String> role, String location, String date) {
+        this.role = role;
+        this.location = location;
+        this.date = date;
+    }
+
     public Recommendation(){}
 
     public List<String> getRole() {
