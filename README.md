@@ -12,18 +12,18 @@ An application back end utilizing REST to transmit data project specific
 information to the front end client for users to view available projects, 
 vendors, and resources for each.  
 
-##Collaboration
+## Collaboration
 This project was worked on in collaboration for the Interapt Hackathon on 
 5/8/2021
 
-###Technologies
+### Technologies
 Spring Web Framework was used to map the end points and handle the 
 controller functions.
 To allow easy implementation for departments, Google sheets API was 
 leveraged as an easy to use back end allowing the average project manager 
 the ability to leverage the system without interference from IT or developers.
 
-###Data Model
+### Data Model
 Resources were fed to the Rest Controller where the raw data was manipulated 
 into mapped objects. When fed through the Rest Controller end points, the 
 POJO we're converted into easily consumable formats for the front end. 
@@ -59,7 +59,7 @@ POJO we're converted into easily consumable formats for the front end.
 
 ```
 
-##REST API Endpoints
+## REST API Endpoints
 | HTTP Method | Endpoint   |   Payload   | Response    |
 | ----------- | ----------- | ----------- | ----------- |
 | **Get**  | https://woay-backend.azurewebsites.net/projects          | Optional Request Param: startDate and endDate       |       Retrieve information on all projects and with start and end date query parameters retrieve projects that fit within a specific timeframe
