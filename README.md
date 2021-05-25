@@ -10,7 +10,7 @@
 ## General Info
 An application back end utilizing REST to transmit data project specific 
 information to the front end client for users to view available projects, 
-vendors, and resources for each.  
+vendors, and resources for each. Consumes this [spreadsheet](https://docs.google.com/spreadsheets/d/1PkATem4Il_rVosE35tpwTPgydf_Ni1wtqfPFN-Zg6x0/edit#gid=2051697878) and shows changes in real-time. Frontend is available at [wa-frontend](https://github.com/Spectre-ak/wa-frontend)
 
 ## Collaboration
 This project was worked on in collaboration for the Interapt Hackathon on 
@@ -76,4 +76,4 @@ POJO we're converted into easily consumable formats for the front end.
 
 
 
-##### Frontend is available at https://github.com/Spectre-ak/wa-frontend
+
